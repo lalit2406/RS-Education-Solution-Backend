@@ -1,15 +1,16 @@
 import Document from "../models/Document.js";
 import Task from "../models/Task.js";
+import User from "../models/User.js";
 
 export const getDashboardData = async (req, res) => {
   try {
-    const user = req.user;
+    const user = await User.findById(req.user._id).select("name");
 
     const documents = await Document.countDocuments({
-      user: user._id,
+      user: req.user._id,
     });
 
-    const tasks = await Task.find({ user: user._id }).sort({
+    const tasks = await Task.find({ user: req.user._id }).sort({
       createdAt: -1,
     });
 
@@ -30,6 +31,7 @@ export const getDashboardData = async (req, res) => {
     });
 
   } catch (err) {
+    console.log(err); // 👈 ADD THIS (important)
     res.status(500).json({ message: "Dashboard error" });
   }
 };
