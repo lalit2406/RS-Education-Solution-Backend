@@ -8,6 +8,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import savedCollegeRoutes from "./routes/savedCollegeRoutes.js";
 const app = express();
 
 
@@ -49,6 +50,8 @@ app.use("/api/documents", documentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 app.use("/api/tasks", taskRoutes);
+
+app.use("/api", savedCollegeRoutes);
 
 // ===============================
 // 🔹 HEALTH CHECK (optional)
