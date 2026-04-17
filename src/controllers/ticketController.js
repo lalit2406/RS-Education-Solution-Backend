@@ -1,6 +1,7 @@
 import Ticket from "../models/Ticket.js";
 import { sendMail } from "../config/mail.js";
 import User from "../models/User.js";
+import { io } from "../server.js";
 
 export const createTicket = async (req, res) => {
   try {
@@ -11,11 +12,15 @@ export const createTicket = async (req, res) => {
     const { category, description } = req.body;
 
     const ticket = await Ticket.create({
+      user: user._id,
       name,
       email,
       category,
       description,
     });
+
+    // 🔥 REAL-TIME EVENT
+io.emit("new-ticket", ticket);
 
     // send email to admin
     await sendMail(
