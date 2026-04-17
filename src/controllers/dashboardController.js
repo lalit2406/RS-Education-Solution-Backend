@@ -1,6 +1,7 @@
 import Document from "../models/Document.js";
 import Task from "../models/Task.js";
 import User from "../models/User.js";
+import SavedCollege from "../models/SavedCollege.js";
 
 export const getDashboardData = async (req, res) => {
   try {
@@ -9,6 +10,10 @@ export const getDashboardData = async (req, res) => {
     const documents = await Document.countDocuments({
       user: req.user._id,
     });
+
+    const savedColleges = await SavedCollege.countDocuments({
+  user: req.user._id,
+});
 
     const tasks = await Task.find({ user: req.user._id }).sort({
       createdAt: -1,
@@ -22,6 +27,7 @@ export const getDashboardData = async (req, res) => {
 
     res.json({
       user,
+      savedColleges,
       stats: {
         documents,
         tasks: tasks.length,
