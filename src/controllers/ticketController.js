@@ -43,3 +43,41 @@ io.emit("new-ticket", ticket);
     res.status(500).json({ message: err.message });
   }
 };
+
+export const updateTicketStatus = async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    ticket.status = req.body.status || ticket.status;
+
+    await ticket.save();
+
+    // 🔥 REAL-TIME UPDATE
+    io.emit("ticket-updated", ticket);
+
+    res.json(ticket);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const deleteTicket = async (req, res) => {
+  try {
+    const ticket = await Ticket.findByIdAndDelete(req.params.id);
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    // 🔥 REAL-TIME DELETE EVENT
+    io.emit("ticket-deleted", req.params.id);
+
+    res.json({ message: "Ticket deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -4,6 +4,7 @@ import { protect } from "../middleware/authMiddleware.js";
 import Ticket from "../models/Ticket.js";
 import User from "../models/User.js";
 import { sendMail } from "../config/mail.js";
+import { io } from "../server.js";
 
 const router = express.Router();
 
@@ -79,6 +80,8 @@ router.delete("/:id", protect, async (req, res) => {
     }
 
     await Ticket.findByIdAndDelete(req.params.id);
+
+    io.emit("ticket-deleted", req.params.id);
 
     res.json({ message: "Ticket deleted" });
 
