@@ -51,7 +51,15 @@ export const signup = async (req, res) => {
     }
 
     // 📩 SEND OTP EMAIL
-    await sendMail(email, "Verify Your Email", otp, user.name);
+    await sendMail({
+      to: email,
+      subject: "Verify Your Email",
+      type: "otp",
+      data: {
+        name: user.name,
+        otp: otp,
+      },
+    });
 
     res.status(200).json({
       message: "OTP sent to email. Please verify.",
@@ -87,7 +95,15 @@ export const login = async (req, res) => {
 
       await user.save();
 
-      await sendMail(email, "Verify Your Email", otp, user.name);
+      await sendMail({
+        to: email,
+        subject: "Verify Your Email",
+        type: "otp",
+        data: {
+          name: user.name,
+          otp,
+        },
+      });
 
       return res.status(403).json({
         message: "Email not verified. OTP sent again.",
@@ -140,7 +156,15 @@ export const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    await sendMail(email, "Password Reset OTP", otp, user.name);
+    await sendMail({
+      to: email,
+      subject: "Password Reset OTP",
+      type: "otp",
+      data: {
+        name: user.name,
+        otp,
+      },
+    });
 
     res.json({
       message: "OTP sent to email",
@@ -285,7 +309,15 @@ export const resendOtp = async (req, res) => {
 
     await user.save();
 
-    await sendMail(email, "Resend OTP", otp, user.name);
+    await sendMail({
+      to: email,
+      subject: "Resend OTP",
+      type: "otp",
+      data: {
+        name: user.name,
+        otp,
+      },
+    });
 
     res.json({ message: "OTP resent successfully" });
   } catch (error) {
@@ -316,7 +348,15 @@ export const googleAuth = async (req, res) => {
         user.otpExpiry = otpExpiryTime();
         await user.save();
 
-        await sendMail(email, "Verify Your Email", otp, user.name);
+        await sendMail({
+          to: email,
+          subject: "Verify Your Email",
+          type: "otp",
+          data: {
+            name: user.name,
+            otp,
+          },
+        });
 
         return res.status(403).json({
           message: "Email not verified. OTP sent.",
@@ -355,7 +395,15 @@ export const googleAuth = async (req, res) => {
         user.otpExpiry = otpExpiryTime();
         await user.save();
 
-        await sendMail(email, "Verify Your Email", otp, user.name);
+        await sendMail({
+          to: email,
+          subject: "Verify Your Email",
+          type: "otp",
+          data: {
+            name: user.name,
+            otp,
+          },
+        });
 
         return res.status(403).json({
           message: "Email not verified. OTP sent.",
@@ -392,7 +440,15 @@ export const googleAuth = async (req, res) => {
       otpExpiry: otpExpiryTime(),
     });
 
-    await sendMail(email, "Verify Your Email", otp, user.name);
+    await sendMail({
+      to: email,
+      subject: "Verify Your Email",
+      type: "otp",
+      data: {
+        name: user.name,
+        otp,
+      },
+    });
 
     return res.status(200).json({
       message: "OTP sent to email",

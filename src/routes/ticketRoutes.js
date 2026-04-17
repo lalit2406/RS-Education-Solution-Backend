@@ -70,13 +70,16 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(404).json({ message: "Ticket not found" });
     }
 
-    // 🔥 SAFE EMAIL (NOW RELIABLE)
     if (ticket.user?.email) {
-      await sendMail(
-        ticket.user.email,
-        "Your Issue is Resolved ✅",
-        "Your support ticket has been resolved."
-      );
+      await sendMail({
+        to: ticket.user.email,
+        subject: "Ticket Resolved ✅",
+        type: "ticket",
+        data: {
+          name: ticket.user.name,
+          message: "Your issue has been successfully resolved.",
+        },
+      });
     }
 
     await Ticket.findByIdAndDelete(req.params.id);
@@ -84,7 +87,6 @@ router.delete("/:id", protect, async (req, res) => {
     io.emit("ticket-deleted", req.params.id);
 
     res.json({ message: "Ticket deleted" });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: err.message });

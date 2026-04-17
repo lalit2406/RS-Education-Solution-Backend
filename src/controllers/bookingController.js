@@ -25,29 +25,20 @@ export const createBooking = async (req, res) => {
     });
 
     // 🔥 REAL-TIME EVENT
-io.emit("new-booking", booking);
+    io.emit("new-booking", booking);
 
-    // 🔥 SEND CUSTOM EMAIL HERE
-   await sendMail(
-  user.email,
-  "📞 RS Education - Call Confirmation",
-  `
-Dear ${user.name},
-
-Thank you for booking a consultation with RS Education.
-
-🗓 Date: ${date}
-⏰ Time: ${time}
-
-Our advisor will contact you shortly.
-
-Best regards,
-RS Education Team
-`
-);
+    await sendMail({
+      to: user.email,
+      subject: "📞 Booking Confirmation",
+      type: "booking",
+      data: {
+        name: user.name,
+        date,
+        time,
+      },
+    });
 
     res.status(201).json(booking);
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

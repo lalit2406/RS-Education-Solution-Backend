@@ -20,22 +20,36 @@ export const createTicket = async (req, res) => {
     });
 
     // 🔥 REAL-TIME EVENT
-io.emit("new-ticket", ticket);
+    io.emit("new-ticket", ticket);
 
     // send email to admin
-    await sendMail(
-      "youradmin@gmail.com",
-      "New Support Ticket",
-      `New ticket from ${name}\nCategory: ${category}\n${description}`,
-    );
+    await sendMail({
+      to: "youradmin@gmail.com",
+      subject: "New Support Ticket",
+      type: "reply",
+      data: {
+        name: "Admin",
+        reply: `
+New ticket from ${name}
+
+Category: ${category}
+${description}
+    `,
+      },
+    });
 
     // send confirmation to user (optional)
     if (email) {
-      await sendMail(
-        email,
-        "Ticket Received",
-        "We received your request. Our team will contact you within 24 hours.",
-      );
+      await sendMail({
+        to: email,
+        subject: "Ticket Received",
+        type: "reply",
+        data: {
+          name,
+          reply:
+            "We received your request. Our team will contact you within 24 hours.",
+        },
+      });
     }
 
     res.status(201).json(ticket);
