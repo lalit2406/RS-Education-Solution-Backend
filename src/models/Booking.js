@@ -4,9 +4,13 @@ const bookingSchema = new mongoose.Schema(
   {
     name: String,
     email: String,
-    phone: String,   // 🔥 ADD THIS
+    phone: String,  
     date: String,
     time: String,
+     service: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

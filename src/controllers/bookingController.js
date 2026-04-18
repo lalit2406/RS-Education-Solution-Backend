@@ -7,12 +7,18 @@ export const createBooking = async (req, res) => {
   try {
     const user = await User.findById(req.user);
 
-    const { phone, date, time } = req.body;
+    const { phone, date, time, service } = req.body;
 
     // 🔥 VALIDATION
     if (!phone || !/^[0-9]{10}$/.test(phone)) {
       return res.status(400).json({
         message: "Invalid phone number",
+      });
+    }
+
+    if (!service) {
+      return res.status(400).json({
+        message: "Service is required",
       });
     }
 
@@ -22,6 +28,7 @@ export const createBooking = async (req, res) => {
       phone,
       date,
       time,
+      service,
     });
 
     // 🔥 REAL-TIME EVENT
