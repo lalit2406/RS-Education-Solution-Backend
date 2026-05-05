@@ -24,9 +24,20 @@ const app = express();
 app.use(express.json());
 
 // CORS (allow frontend)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://rs-education-solution-frontend.vercel.app"
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // your React app
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
