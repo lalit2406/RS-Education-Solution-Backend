@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
 
 export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
   try {
@@ -27,7 +28,10 @@ export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
       greetingTimeout: 60000,
       socketTimeout: 60000,
 
-      family: 4,
+      // ✅ FORCE IPV4
+      lookup: (hostname, options, callback) => {
+        return dns.lookup(hostname, { family: 4 }, callback);
+      },
     });
 
     let htmlTemplate = "";
