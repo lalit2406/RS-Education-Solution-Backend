@@ -2,6 +2,10 @@ import nodemailer from "nodemailer";
 
 export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
   try {
+
+    console.log(process.env.EMAIL_USER);
+    console.log(process.env.EMAIL_PASS ? "PASS EXISTS" : "NO PASS");
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
