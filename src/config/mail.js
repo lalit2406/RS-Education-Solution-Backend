@@ -7,12 +7,21 @@ export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
     console.log(process.env.EMAIL_PASS ? "PASS EXISTS" : "NO PASS");
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  requireTLS: true,
+
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
     let htmlTemplate = "";
 
