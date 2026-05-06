@@ -2,25 +2,33 @@ import nodemailer from "nodemailer";
 
 export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
   try {
-
     console.log(process.env.EMAIL_USER);
     console.log(process.env.EMAIL_PASS ? "PASS EXISTS" : "NO PASS");
 
- const transporter = nodemailer.createTransport({
-  service: "gmail",
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
 
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
+      port: 587,
 
-  port: 587,
-  secure: false,
+      secure: false,
 
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
+      requireTLS: true,
+
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+
+      tls: {
+        rejectUnauthorized: false,
+      },
+
+      connectionTimeout: 60000,
+      greetingTimeout: 60000,
+      socketTimeout: 60000,
+
+      family: 4,
+    });
 
     let htmlTemplate = "";
 
