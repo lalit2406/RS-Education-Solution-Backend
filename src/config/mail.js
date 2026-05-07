@@ -6,25 +6,28 @@ const OAuth2 = google.auth.OAuth2;
 const oauth2Client = new OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "https://developers.google.com/oauthplayground",
+  "https://developers.google.com/oauthplayground"
 );
 
 oauth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
 });
 
-export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
+export const sendMail = async ({
+  to,
+  subject,
+  type = "otp",
+  data = {},
+}) => {
   try {
+    // ✅ Generate access token
     const accessToken = await oauth2Client.getAccessToken();
 
-    console.log("ACCESS TOKEN:", accessToken);
+    console.log("✅ ACCESS TOKEN GENERATED");
 
+    // ✅ Gmail OAuth2 Transport
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-
-      port: 465,
-
-      secure: true,
+      service: "gmail",
 
       auth: {
         type: "OAuth2",
@@ -82,45 +85,50 @@ export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
       </div>`;
     }
 
+    // ================= TICKET TEMPLATE =================
     if (type === "ticket") {
       htmlTemplate = `
-    <div style="font-family: Arial; padding:20px;">
-      <h2>RS Education</h2>
-      <p>Hello ${data.name},</p>
+      <div style="font-family: Arial; padding:20px;">
+        <h2>RS Education</h2>
 
-      <p>Your support ticket has been resolved ✅</p>
+        <p>Hello ${data.name},</p>
 
-      <p style="color:#555;">
-        ${data.message}
-      </p>
+        <p>Your support ticket has been resolved ✅</p>
 
-      <br/>
-      <p>Regards,<br/>RS Education Team</p>
-    </div>
-  `;
+        <p style="color:#555;">
+          ${data.message}
+        </p>
+
+        <br/>
+
+        <p>Regards,<br/>RS Education Team</p>
+      </div>`;
     }
 
+    // ================= BOOKING TEMPLATE =================
     if (type === "booking") {
       htmlTemplate = `
-    <div style="font-family: Arial; padding:20px;">
-      <h2>RS Education</h2>
-      <p>Hello ${data.name},</p>
+      <div style="font-family: Arial; padding:20px;">
+        <h2>RS Education</h2>
 
-      <p>Your consultation has been booked successfully 📞</p>
+        <p>Hello ${data.name},</p>
 
-      <p>
-        Date: ${data.date}<br/>
-        Time: ${data.time}
-      </p>
+        <p>Your consultation has been booked successfully 📞</p>
 
-      <p>Our advisor will contact you shortly.</p>
+        <p>
+          Date: ${data.date}<br/>
+          Time: ${data.time}
+        </p>
 
-      <br/>
-      <p>Regards,<br/>RS Education Team</p>
-    </div>
-  `;
+        <p>Our advisor will contact you shortly.</p>
+
+        <br/>
+
+        <p>Regards,<br/>RS Education Team</p>
+      </div>`;
     }
 
+    // ✅ SEND EMAIL
     await transporter.sendMail({
       from: `"RS Education" <${process.env.EMAIL_USER}>`,
       to,
@@ -128,9 +136,10 @@ export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
       html: htmlTemplate,
     });
 
-    console.log("✅ Email sent");
+    console.log("✅ EMAIL SENT SUCCESSFULLY");
   } catch (error) {
     console.error("❌ FULL EMAIL ERROR:", error);
+
     throw new Error("Email failed");
   }
 };
