@@ -21,7 +21,7 @@ export const sendMail = async ({
   try {
     const accessToken = await oauth2Client.getAccessToken();
 
-    console.log("✅ ACCESS TOKEN GENERATED");
+   
 
     const gmail = google.gmail({
       version: "v1",
@@ -139,7 +139,6 @@ export const sendMail = async ({
       },
     });
 
-    console.log("✅ EMAIL SENT SUCCESSFULLY");
   } catch (error) {
     console.error("❌ FULL EMAIL ERROR:", error);
 
