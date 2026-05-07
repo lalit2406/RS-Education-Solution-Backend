@@ -1,18 +1,39 @@
 import nodemailer from "nodemailer";
+import { google } from "googleapis";
+
+const OAuth2 = google.auth.OAuth2;
+
+const oauth2Client = new OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  "https://developers.google.com/oauthplayground",
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+});
 
 export const sendMail = async ({ to, subject, type = "otp", data = {} }) => {
   try {
-  
+    const accessToken = await oauth2Client.getAccessToken();
+
     const transporter = nodemailer.createTransport({
-  service: "gmail",
+      service: "gmail",
 
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
+      auth: {
+        type: "OAuth2",
 
-  family: 4,
-});
+        user: process.env.EMAIL_USER,
+
+        clientId: process.env.GOOGLE_CLIENT_ID,
+
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+
+        accessToken: accessToken.token,
+      },
+    });
 
     let htmlTemplate = "";
 
