@@ -14,6 +14,8 @@ import savedCollegeRoutes from "./routes/savedCollegeRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import guidanceRoutes from "./routes/guidanceRoutes.js";
 import leadRoutes from "./routes/leadRoutes.js";
+import universityRoutes from './routes/universityRoutes.js';
+
 
 const app = express();
 
@@ -75,6 +77,14 @@ app.use("/api", savedCollegeRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/guidance", guidanceRoutes);
 app.use("/api/leads", leadRoutes);
+
+// Routes
+app.use('/api/universities', universityRoutes);
+
+// Root Health Check Route
+app.get('/', (req, res) => {
+  res.send('RS Education Fee Structure API is running...');
+});
 
 // ===============================
 // 🔹 HEALTH CHECK (optional)
